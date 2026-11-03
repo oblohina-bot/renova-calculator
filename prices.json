@@ -10,5 +10,9 @@
     "normal": 1.0,
     "fast": 1.2,
     "urgent": 1.4
+  },
+  "discount": {
+    "areaThreshold": 100,
+    "rate": 0.1
   }
 }

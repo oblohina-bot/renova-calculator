@@ -93,7 +93,7 @@
 
     .container {
       width: 100%;
-      max-width: 1240px;
+      max-width: 1264px;
       margin: 0 auto;
       padding: 0 16px;
     }
@@ -102,9 +102,10 @@
     /* ---------- Topbar ---------- */
     .topbar {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px 16px;
       padding: 22px 0;
       border-bottom: 1px solid var(--line);
     }
@@ -221,6 +222,10 @@
       background-clip: text;
       color: transparent;
     }
+    @media (max-width: 420px) {
+      h1 { font-size: 8.4vw; }
+      .status { padding: 6px 12px; font-size: 12.5px; }
+    }
     h1 em {
       font-style: normal;
       background: linear-gradient(100deg, var(--accent-hover), var(--accent) 60%, #a9e03a);
@@ -233,7 +238,7 @@
       margin: 0;
       max-width: 440px;
       color: var(--muted);
-      font-size: 17px;
+      font-size: 18px;
       line-height: 1.6;
     }
     .hero-meta {
@@ -261,17 +266,28 @@
       font-weight: 500;
       color: var(--text);
     }
-    .hero-meta span { color: var(--faint); font-size: 12.5px; line-height: 1.35; }
+    .hero-meta span { color: var(--faint); font-size: 13.5px; line-height: 1.35; }
 
     /* ---------- Layout ---------- */
     .workspace {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "config" "result" "compare";
       gap: 20px;
       padding-bottom: 72px;
     }
+    .config { grid-area: config; }
+    .result { grid-area: result; }
+    .compare { grid-area: compare; }
+    /* 55 / 45: налаштування й порівняння ліворуч, результат праворуч і завжди на виду */
     @media (min-width: 960px) {
-      .workspace { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+      .workspace {
+        grid-template-columns: minmax(0, 11fr) minmax(0, 9fr);
+        grid-template-areas: "config result" "compare result";
+        grid-template-rows: auto 1fr;
+        gap: 24px;
+        align-items: start;
+      }
       .result { position: sticky; top: 24px; }
     }
 
@@ -334,7 +350,7 @@
     .step-desc {
       margin-left: auto;
       color: var(--faint);
-      font-size: 13px;
+      font-size: 14px;
       text-align: right;
     }
 
@@ -427,7 +443,7 @@
       justify-content: space-between;
       margin-top: 4px;
       color: var(--faint);
-      font-size: 12px;
+      font-size: 13px;
       font-variant-numeric: tabular-nums;
     }
 
@@ -437,7 +453,7 @@
       min-height: 22px;
       margin: 14px 0 0;
       color: var(--faint);
-      font-size: 14px;
+      font-size: 15px;
       transition: color var(--dur) var(--ease);
     }
     .field-msg.is-error { color: var(--danger); }
@@ -448,7 +464,7 @@
       display: grid;
       gap: 12px;
     }
-    @container (min-width: 600px) { .types { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @container (min-width: 720px) { .types { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
     .option { position: relative; display: block; cursor: pointer; }
     .option input {
@@ -531,10 +547,10 @@
     .type-name {
       font-family: var(--font-display);
       font-weight: 500;
-      font-size: 15px;
+      font-size: 16px;
       letter-spacing: -0.01em;
     }
-    .type-desc { color: var(--muted); font-size: 13.5px; line-height: 1.5; }
+    .type-desc { color: var(--muted); font-size: 14.5px; line-height: 1.5; }
     .type-price {
       display: flex;
       align-items: baseline;
@@ -554,7 +570,7 @@
     .type-price small { color: var(--faint); font-family: var(--font-body); font-size: 12px; font-weight: 500; }
 
     /* Вузька колонка: картки стають горизонтальними, щоб назви не обрізались */
-    @container (max-width: 599px) {
+    @container (max-width: 719px) {
       .type-card {
         display: grid;
         grid-template-columns: 42px minmax(0, 1fr) auto;
@@ -598,8 +614,8 @@
       color: var(--accent-ink);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 10px 26px -10px var(--accent-glow);
     }
-    .seg-name { font-weight: 700; font-size: 14.5px; }
-    .seg-meta { color: var(--faint); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+    .seg-name { font-weight: 700; font-size: 15.5px; }
+    .seg-meta { color: var(--faint); font-size: 13.5px; font-variant-numeric: tabular-nums; }
     .option input:checked + .seg .seg-meta { color: rgba(13, 18, 6, 0.7); }
 
     /* ---------- Result ---------- */
@@ -631,7 +647,7 @@
       gap: 10px;
       margin: 0 0 22px;
       color: var(--muted);
-      font-size: 12.5px;
+      font-size: 13px;
       font-weight: 600;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -642,7 +658,7 @@
       border-radius: 999px;
       background: var(--accent-soft);
       color: var(--accent);
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
       letter-spacing: 0;
       text-transform: none;
@@ -677,7 +693,7 @@
     .total-sub {
       margin: 16px 0 0;
       color: var(--muted);
-      font-size: 14.5px;
+      font-size: 15.5px;
     }
 
     .notice {
@@ -727,32 +743,34 @@
     }
     .row {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 2px 16px;
       padding: 12px 14px;
       border-radius: 14px;
-      font-size: 14.5px;
+      font-size: 15.5px;
       transition: background-color var(--dur) var(--ease);
     }
     .row:hover { background: rgba(243, 245, 242, 0.03); }
     .row dt { color: var(--muted); }
-    .row dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
-    .row.is-strong {
+    .row dd { margin: 0 0 0 auto; font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+    .row.is-total {
       margin-top: 4px;
       background: var(--surface-2);
       box-shadow: var(--highlight);
     }
     .row.is-strong dt { color: var(--text); font-weight: 600; }
-    .row.is-strong dd { font-family: var(--font-display); font-weight: 500; }
+    .row.is-total dt { color: var(--text); font-weight: 700; }
+    .row.is-total dd { font-family: var(--font-display); font-weight: 500; font-size: 17px; color: var(--accent); }
 
     .formula {
       margin: 14px 0 0;
       padding: 14px 16px;
       border: 1px dashed var(--line-strong);
       border-radius: var(--radius);
-      color: var(--faint);
-      font-size: 13px;
+      color: var(--muted);
+      font-size: 14px;
       font-variant-numeric: tabular-nums;
       line-height: 1.7;
     }
@@ -763,12 +781,217 @@
       gap: 10px;
       margin: 22px 0 0;
       color: var(--faint);
-      font-size: 12.5px;
+      font-size: 13.5px;
       line-height: 1.5;
     }
     .disclaimer svg { flex: none; margin-top: 2px; }
 
     .is-hidden { display: none !important; }
+
+    /* ---------- Discount ---------- */
+    .savings {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px 14px;
+      margin-top: 20px;
+      padding: 12px 16px;
+      border: 1px solid var(--accent-line);
+      border-radius: var(--radius);
+      background: linear-gradient(100deg, rgba(200, 255, 70, 0.14), rgba(200, 255, 70, 0.04));
+      box-shadow: 0 12px 30px -18px var(--accent-glow);
+    }
+    .savings-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      font-size: 14.5px;
+      font-weight: 700;
+    }
+    .savings-amount {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+    .row.is-discount dt, .row.is-discount dd { color: var(--accent); }
+    .discount-hint {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin: 14px 0 0;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      background: var(--accent-soft);
+      color: var(--muted);
+      font-size: 14.5px;
+      line-height: 1.5;
+    }
+    .discount-hint::before {
+      content: "%";
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: rgba(200, 255, 70, 0.16);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .discount-in { animation: discountIn 320ms var(--ease); }
+    @keyframes discountIn {
+      0% { opacity: 0; transform: translateY(-6px) scale(0.98); }
+      100% { opacity: 1; transform: none; }
+    }
+
+    /* ---------- Actions ---------- */
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 50px;
+      padding: 0 18px;
+      border: 1px solid var(--line-strong);
+      border-radius: 16px;
+      background: var(--surface-2);
+      color: var(--text);
+      font: 600 15px/1.2 var(--font-body);
+      cursor: pointer;
+      transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease),
+                  transform 160ms var(--ease), box-shadow var(--dur) var(--ease), color var(--dur) var(--ease);
+    }
+    .btn:hover:not(:disabled) { background: var(--surface-3); border-color: rgba(243, 245, 242, 0.24); }
+    .btn:active:not(:disabled) { transform: scale(0.98); }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 16px; }
+    .btn:disabled { opacity: 0.42; cursor: not-allowed; }
+    .btn-primary {
+      grid-column: 1 / -1;
+      border-color: transparent;
+      background: linear-gradient(180deg, var(--accent-hover), var(--accent));
+      color: var(--accent-ink);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 14px 30px -14px var(--accent-glow);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+      border-color: transparent;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 18px 38px -14px rgba(200, 255, 70, 0.4);
+    }
+    .btn-ghost { background: transparent; }
+
+    .toast {
+      margin: 0;
+      font-size: 14.5px;
+      font-weight: 600;
+    }
+    .toast:not(:empty) {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      animation: discountIn 260ms var(--ease);
+    }
+    .toast.is-success { background: var(--accent-soft); color: var(--accent); }
+    .toast.is-success::before { content: "✓"; }
+    .toast.is-error { background: var(--danger-soft); color: var(--danger); }
+    .toast.is-error::before { content: "!"; }
+
+    /* ---------- Compare ---------- */
+    .compare { padding: 26px 18px; }
+    @media (min-width: 720px) { .compare { padding: 32px 28px; } }
+    .compare-head h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    .compare-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .bars {
+      display: grid;
+      gap: 10px;
+      margin: 22px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .bar-item {
+      display: grid;
+      gap: 10px;
+      width: 100%;
+      min-height: 48px;
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(10, 13, 12, 0.45);
+      color: var(--text);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease), transform 160ms var(--ease);
+    }
+    .bar-item:hover:not(:disabled) { background: var(--surface-2); border-color: var(--line-strong); }
+    .bar-item:active:not(:disabled) { transform: scale(0.99); }
+    .bar-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .bar-item:disabled { cursor: default; opacity: 0.6; }
+    .bar-item[aria-pressed="true"] {
+      border-color: var(--accent-line);
+      background: linear-gradient(100deg, rgba(200, 255, 70, 0.08), rgba(10, 13, 12, 0.45));
+    }
+    .bar-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 4px 12px;
+    }
+    .bar-name { font-weight: 700; font-size: 16px; }
+    .bar-value {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+    .bar-item[aria-pressed="true"] .bar-value { color: var(--accent); }
+    .bar-track {
+      display: block;
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--surface-3);
+    }
+    .bar-fill {
+      display: block;
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(243, 245, 242, 0.22), rgba(243, 245, 242, 0.42));
+      transition: width 320ms var(--ease), background-color var(--dur) var(--ease);
+    }
+    .bar-item[aria-pressed="true"] .bar-fill {
+      background: linear-gradient(90deg, #a6dc32, var(--accent-hover));
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+    .bar-note { color: var(--faint); font-size: 13.5px; }
+    .bar-item[aria-pressed="true"] .bar-note { color: var(--muted); }
+
+    /* ---------- Print sheet (A4) ---------- */
+    .print-sheet { display: none; }
 
     /* ---------- Footer ---------- */
     .footer {
@@ -804,6 +1027,81 @@
         transition-duration: 0.001ms !important;
       }
       .reveal { opacity: 1; transform: none; }
+    }
+
+    @media print {
+      @page { size: A4; margin: 16mm 16mm 18mm; }
+      html, body { background: #fff !important; color: #14181a; }
+      body::before { display: none; }
+      .container { display: none !important; }
+      .print-sheet {
+        display: block;
+        font-family: var(--font-body);
+        font-size: 11pt;
+        line-height: 1.45;
+        color: #14181a;
+      }
+      .ps-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 16px;
+        padding-bottom: 12pt;
+        border-bottom: 2px solid #14181a;
+      }
+      .ps-brand {
+        display: flex;
+        align-items: center;
+        gap: 10pt;
+        font-family: var(--font-display);
+        font-size: 18pt;
+        font-weight: 500;
+        letter-spacing: 0.2em;
+      }
+      .ps-mark {
+        display: inline-grid;
+        place-items: center;
+        width: 26pt; height: 26pt;
+        border-radius: 7pt;
+        background: #c8ff46;
+        color: #0d1206;
+        font-size: 13pt;
+        letter-spacing: 0;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .ps-meta { display: grid; text-align: right; font-size: 10pt; color: #4a5250; }
+      .ps-meta strong { color: #14181a; font-size: 12pt; }
+      .print-sheet h2 {
+        margin: 18pt 0 6pt;
+        font-family: var(--font-display);
+        font-size: 10pt;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #4a5250;
+      }
+      .print-sheet table { width: 100%; border-collapse: collapse; }
+      .print-sheet th, .print-sheet td {
+        padding: 7pt 0;
+        border-bottom: 1px solid #dcdfdd;
+        text-align: left;
+        font-weight: 400;
+      }
+      .print-sheet td { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+      .ps-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 14pt;
+        padding: 12pt 14pt;
+        border: 2px solid #14181a;
+        border-radius: 8pt;
+        break-inside: avoid;
+      }
+      .ps-total span { font-weight: 700; }
+      .ps-total strong { font-family: var(--font-display); font-size: 18pt; font-weight: 500; }
+      .ps-note { margin-top: 18pt; font-size: 9pt; color: #5c6461; }
     }
   </style>
 </head>
@@ -949,10 +1247,17 @@
           <span class="chip" id="summaryChip">—</span>
         </p>
 
-        <div id="resultLive" aria-live="polite" aria-atomic="true">
+        <div id="resultLive">
           <div id="resultValue" class="is-hidden">
             <p class="total" id="total"><span class="total-num">0</span> <span class="total-cur"></span></p>
             <p class="total-sub" id="perM2"></p>
+            <div class="savings is-hidden" id="savings">
+              <span class="savings-tag">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
+                <span id="savingsLabel">Ваша економія</span>
+              </span>
+              <span class="savings-amount" id="savingsAmount">—</span>
+            </div>
           </div>
 
           <div class="notice" id="resultNotice">
@@ -966,14 +1271,58 @@
           <div class="row"><dt>Тариф за м²</dt><dd id="bRate">—</dd></div>
           <div class="row"><dt>Коефіцієнт терміновості</dt><dd id="bCoef">—</dd></div>
           <div class="row is-strong"><dt>Базова вартість</dt><dd id="bBase">—</dd></div>
+          <div class="row is-discount is-hidden" id="rowDiscount"><dt id="bDiscountLabel">Знижка</dt><dd id="bDiscount">—</dd></div>
+          <div class="row is-total"><dt>Підсумкова вартість</dt><dd id="bTotal">—</dd></div>
         </dl>
+        <p class="discount-hint is-hidden" id="discountHint"></p>
         <p class="formula is-hidden" id="formula"></p>
+
+        <div class="actions">
+          <button class="btn btn-primary" type="button" id="copyBtn" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>
+            Скопіювати розрахунок
+          </button>
+          <button class="btn" type="button" id="printBtn" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M12 18v-6M9 15l3 3 3-3"/></svg>
+            Зберегти PDF
+          </button>
+          <button class="btn btn-ghost" type="button" id="resetBtn" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+            Скинути
+          </button>
+        </div>
+        <p class="toast" id="toast" role="status" aria-live="polite"></p>
+        <p class="visually-hidden" id="srResult" aria-live="polite"></p>
 
         <p class="disclaimer">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16.5v.01"/></svg>
           <span>Тарифи демонстраційні й не є підтвердженими ринковими цінами. Розрахунок орієнтовний і не є комерційною пропозицією; точна вартість визначається після огляду об'єкта.</span>
         </p>
       </aside>
+
+      <section class="panel compare reveal" style="--i:4" aria-labelledby="compareTitle">
+        <div class="compare-head">
+          <h2 id="compareTitle">Порівняйте варіанти ремонту</h2>
+          <p id="compareDesc">Для поточної площі й терміновості, з урахуванням знижки. Натисніть на варіант, щоб обрати його.</p>
+        </div>
+        <ul class="bars" aria-describedby="compareDesc">
+          <li><button class="bar-item" type="button" data-type="cosmetic" aria-pressed="false" disabled>
+            <span class="bar-head"><span class="bar-name">Косметичний</span><span class="bar-value">—</span></span>
+            <span class="bar-track" aria-hidden="true"><span class="bar-fill"></span></span>
+            <span class="bar-note">—</span>
+          </button></li>
+          <li><button class="bar-item" type="button" data-type="capital" aria-pressed="false" disabled>
+            <span class="bar-head"><span class="bar-name">Капітальний</span><span class="bar-value">—</span></span>
+            <span class="bar-track" aria-hidden="true"><span class="bar-fill"></span></span>
+            <span class="bar-note">—</span>
+          </button></li>
+          <li><button class="bar-item" type="button" data-type="designer" aria-pressed="false" disabled>
+            <span class="bar-head"><span class="bar-name">Дизайнерський</span><span class="bar-value">—</span></span>
+            <span class="bar-track" aria-hidden="true"><span class="bar-fill"></span></span>
+            <span class="bar-note">—</span>
+          </button></li>
+        </ul>
+      </section>
     </main>
 
     <footer class="footer">
@@ -981,6 +1330,9 @@
       <span>Ціни у гривнях · тарифи з <code>prices.json</code></span>
     </footer>
   </div>
+
+  <!-- Світлий кошторис A4: видимий лише під час друку / збереження в PDF -->
+  <section class="print-sheet" id="printSheet" aria-hidden="true"></section>
 
   <script>
     (function () {
@@ -994,6 +1346,7 @@
       var money = new Intl.NumberFormat('uk-UA', { style: 'currency', currency: 'UAH', minimumFractionDigits: 0, maximumFractionDigits: 2 });
       var number = new Intl.NumberFormat('uk-UA', { maximumFractionDigits: 2 });
       var coefFormat = new Intl.NumberFormat('uk-UA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      var dateFormat = new Intl.DateTimeFormat('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
       var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
       var $ = function (id) { return document.getElementById(id); };
@@ -1003,18 +1356,31 @@
       var areaRange = $('areaRange');
       var areaRow = $('areaRow');
       var areaMsg = $('areaMsg');
+      var copyBtn = $('copyBtn');
+      var printBtn = $('printBtn');
+      var resetBtn = $('resetBtn');
+      var toast = $('toast');
+      var barItems = Array.prototype.slice.call(document.querySelectorAll('.bar-item'));
       var defaultAreaMsg = areaMsg.textContent;
 
       var prices = null;
+      var lastCalc = null;
+      var hadDiscount = false;
       var shownTotal = 0;
       var animFrame = 0;
       var animDone = 0;
+      var toastTimer = 0;
+      var copySeq = 0;
+      var srTimer = 0;
 
       // Захист від NaN / Infinity / undefined у будь-якому виводі
       function fmtMoney(n) { return Number.isFinite(n) ? money.format(n) : '—'; }
       function fmtNumber(n) { return Number.isFinite(n) ? number.format(n) : '—'; }
       function fmtCoef(n) { return Number.isFinite(n) ? coefFormat.format(n) : '—'; }
+      function fmtPercent(rate) { return Number.isFinite(rate) ? number.format(rate * 100) + '%' : '—'; }
       function roundMoney(n) { return Math.round(n * 100) / 100; }
+      // Нерозривні пробіли з Intl замінюємо звичайними, щоб текст коректно вставлявся будь-де
+      function plain(s) { return String(s).replace(/[  ]/g, ' '); }
 
       function isPlainObject(v) { return v !== null && typeof v === 'object' && !Array.isArray(v); }
 
@@ -1041,6 +1407,14 @@
             else if (typeof v !== 'number' || !Number.isFinite(v) || v < 1 || v > 5) errors.push('Коефіцієнт «' + URGENCY_LABELS[key] + '» має бути числом від 1 до 5.');
           });
         }
+
+        if (!isPlainObject(data.discount)) {
+          errors.push('Відсутній розділ «discount» з умовами знижки.');
+        } else {
+          var t = data.discount.areaThreshold, r = data.discount.rate;
+          if (typeof t !== 'number' || !Number.isFinite(t) || t <= 0) errors.push('Поріг знижки «areaThreshold» має бути додатним числом.');
+          if (typeof r !== 'number' || !Number.isFinite(r) || r < 0 || r >= 1) errors.push('Розмір знижки «rate» має бути числом від 0 до 1.');
+        }
         return errors;
       }
 
@@ -1054,6 +1428,19 @@
         if (n === 0) return { error: 'Площа має бути більшою за 0 м².' };
         if (n > AREA_MAX) return { error: 'Перевірте площу: максимум ' + number.format(AREA_MAX) + ' м².' };
         return { value: n };
+      }
+
+      // Базова вартість = площа × тариф × коефіцієнт; знижка — лише для площі строго понад поріг
+      function calculate(area, type, urgency) {
+        var rate = prices.pricesPerM2[type];
+        var coef = prices.urgencyCoefficients[urgency];
+        var base = roundMoney(area * rate * coef);
+        var hasDiscount = area > prices.discount.areaThreshold;
+        var discount = hasDiscount ? roundMoney(base * prices.discount.rate) : 0;
+        return {
+          area: area, type: type, urgency: urgency, rate: rate, coef: coef,
+          base: base, hasDiscount: hasDiscount, discount: discount, total: roundMoney(base - discount)
+        };
       }
 
       function selected(name) {
@@ -1074,9 +1461,8 @@
         box.querySelector('strong').textContent = title;
         box.querySelector('.notice-body').innerHTML = html;
         box.classList.remove('is-hidden');
-        $('resultValue').classList.add('is-hidden');
-        $('breakdown').classList.add('is-hidden');
-        $('formula').classList.add('is-hidden');
+        ['resultValue', 'breakdown', 'formula', 'discountHint'].forEach(function (id) { $(id).classList.add('is-hidden'); });
+        hadDiscount = false;
       }
 
       function escapeHtml(s) {
@@ -1105,12 +1491,12 @@
         shownTotal = to;
         if (reduceMotion.matches || from === to) { setTotal(to); return; }
         var start = performance.now();
-        var duration = 450;
+        var duration = 320;
         // Якщо вкладка у фоні й requestAnimationFrame не спрацьовує, точне значення все одно з'явиться
         animDone = setTimeout(function () {
           cancelAnimationFrame(animFrame);
           setTotal(to);
-        }, duration + 80);
+        }, duration + 60);
         (function tick(now) {
           var t = Math.min(1, (now - start) / duration);
           var eased = 1 - Math.pow(1 - t, 3);
@@ -1131,6 +1517,56 @@
         areaRange.style.setProperty('--fill', pct + '%');
       }
 
+      function syncRangeTo(value) {
+        areaRange.value = Math.min(Number(areaRange.max), Math.max(Number(areaRange.min), value));
+        updateRangeFill();
+      }
+
+      function announce(text) {
+        clearTimeout(srTimer);
+        srTimer = setTimeout(function () { $('srResult').textContent = text; }, 500);
+      }
+
+      function showToast(kind, text) {
+        clearTimeout(toastTimer);
+        toast.className = 'toast is-' + kind;
+        toast.textContent = text;
+        toastTimer = setTimeout(clearToast, 4000);
+      }
+
+      function clearToast() {
+        clearTimeout(toastTimer);
+        toast.className = 'toast';
+        toast.textContent = '';
+      }
+
+      function setActionsEnabled(on) {
+        copyBtn.disabled = !on;
+        printBtn.disabled = !on;
+      }
+
+      function renderCompare(calc) {
+        var totals = {};
+        var max = 0;
+        if (calc) {
+          Object.keys(TYPE_LABELS).forEach(function (key) {
+            totals[key] = calculate(calc.area, key, calc.urgency).total;
+            if (totals[key] > max) max = totals[key];
+          });
+        }
+        barItems.forEach(function (btn) {
+          var key = btn.dataset.type;
+          var ok = calc && Number.isFinite(totals[key]) && max > 0;
+          btn.querySelector('.bar-value').textContent = ok ? fmtMoney(totals[key]) : '—';
+          btn.querySelector('.bar-fill').style.width = ok ? (totals[key] / max * 100).toFixed(2) + '%' : '0%';
+          btn.setAttribute('aria-label', TYPE_LABELS[key] + ': ' + (ok ? fmtMoney(totals[key]) : 'сума недоступна') +
+            (calc && key === calc.type ? ', обраний варіант' : ''));
+          btn.querySelector('.bar-note').textContent = !prices ? 'Тарифи недоступні'
+            : !calc ? 'Вкажіть коректну площу'
+            : fmtMoney(prices.pricesPerM2[key]) + ' / м²' + (key === calc.type ? ' · обраний варіант' : '');
+        });
+      }
+
       function render() {
         if (!prices) return;
 
@@ -1139,6 +1575,7 @@
         var parsed = parseArea(areaInput.value);
 
         $('summaryChip').textContent = TYPE_LABELS[type] + ' · ' + URGENCY_LABELS[urgency].toLowerCase();
+        barItems.forEach(function (btn) { btn.setAttribute('aria-pressed', String(btn.dataset.type === type)); });
 
         if (parsed.error) {
           areaRow.classList.add('is-invalid');
@@ -1146,6 +1583,9 @@
           areaMsg.classList.add('is-error');
           areaMsg.textContent = parsed.error;
           showNotice('hint', 'Потрібна коректна площа', escapeHtml(parsed.error));
+          lastCalc = null;
+          setActionsEnabled(false);
+          renderCompare(null);
           return;
         }
 
@@ -1154,34 +1594,131 @@
         areaMsg.classList.remove('is-error');
         areaMsg.textContent = defaultAreaMsg;
 
-        var area = parsed.value;
-        var rate = prices.pricesPerM2[type];
-        var coef = prices.urgencyCoefficients[urgency];
-        var base = roundMoney(area * rate * coef);
-        var total = base;
+        var c = calculate(parsed.value, type, urgency);
 
-        if (!Number.isFinite(total)) {
+        if (!Number.isFinite(c.total)) {
           showNotice('error', 'Не вдалося розрахувати', 'Перевірте введені дані та файл тарифів.');
+          lastCalc = null;
+          setActionsEnabled(false);
+          renderCompare(null);
           return;
         }
 
+        lastCalc = c;
+        setActionsEnabled(true);
+
         var wasHidden = $('resultValue').classList.contains('is-hidden');
         $('resultNotice').classList.add('is-hidden');
-        $('resultValue').classList.remove('is-hidden');
-        $('breakdown').classList.remove('is-hidden');
-        $('formula').classList.remove('is-hidden');
+        ['resultValue', 'breakdown', 'formula'].forEach(function (id) { $(id).classList.remove('is-hidden'); });
 
-        if (wasHidden) { shownTotal = total; setTotal(total); bump($('resultValue')); }
-        else animateTotal(total);
+        if (wasHidden) { shownTotal = c.total; setTotal(c.total); bump($('resultValue')); }
+        else animateTotal(c.total);
 
-        $('perM2').textContent = '≈ ' + fmtMoney(roundMoney(total / area)) + ' за м² з урахуванням терміновості';
-        $('bArea').textContent = fmtNumber(area) + ' м²';
-        $('bRate').textContent = fmtMoney(rate);
-        $('bCoef').textContent = '× ' + fmtCoef(coef);
-        $('bBase').textContent = fmtMoney(base);
-        $('formula').innerHTML =
-          'Формула: площа × тариф × коефіцієнт<br>' +
-          '<b>' + fmtNumber(area) + ' м²</b> × <b>' + fmtMoney(rate) + '</b> × <b>' + fmtCoef(coef) + '</b> = <b>' + fmtMoney(base) + '</b>';
+        var pct = fmtPercent(prices.discount.rate);
+        $('perM2').textContent = '≈ ' + fmtMoney(roundMoney(c.total / c.area)) + ' за м² з урахуванням терміновості' + (c.hasDiscount ? ' та знижки' : '');
+        $('bArea').textContent = fmtNumber(c.area) + ' м²';
+        $('bRate').textContent = fmtMoney(c.rate);
+        $('bCoef').textContent = '× ' + fmtCoef(c.coef);
+        $('bBase').textContent = fmtMoney(c.base);
+        $('bTotal').textContent = fmtMoney(c.total);
+
+        // Блок знижки: показуємо лише коли вона застосована, з анімацією появи
+        $('savings').classList.toggle('is-hidden', !c.hasDiscount);
+        $('rowDiscount').classList.toggle('is-hidden', !c.hasDiscount);
+        $('discountHint').classList.toggle('is-hidden', c.hasDiscount);
+        if (c.hasDiscount) {
+          $('savingsLabel').textContent = 'Ваша економія — ' + pct;
+          $('savingsAmount').textContent = fmtMoney(c.discount);
+          $('bDiscountLabel').textContent = 'Знижка −' + pct;
+          $('bDiscount').textContent = '−' + fmtMoney(c.discount);
+          if (!hadDiscount) { bumpIn($('savings')); bumpIn($('rowDiscount')); }
+        } else {
+          $('discountHint').textContent = 'Для площі понад ' + fmtNumber(prices.discount.areaThreshold) + ' м² автоматично діє знижка ' + pct + '.';
+        }
+        hadDiscount = c.hasDiscount;
+
+        var formula = 'Формула: площа × тариф × коефіцієнт' + (c.hasDiscount ? ' − знижка' : '') + '<br>' +
+          '<b>' + fmtNumber(c.area) + ' м²</b> × <b>' + fmtMoney(c.rate) + '</b> × <b>' + fmtCoef(c.coef) + '</b> = <b>' + fmtMoney(c.base) + '</b>';
+        if (c.hasDiscount) {
+          formula += '<br>' + fmtMoney(c.base) + ' − ' + pct + ' (<b>' + fmtMoney(c.discount) + '</b>) = <b>' + fmtMoney(c.total) + '</b>';
+        }
+        $('formula').innerHTML = formula;
+
+        renderCompare(c);
+        fillPrint(c);
+        announce('Підсумкова вартість ' + fmtMoney(c.total) + (c.hasDiscount ? ', з урахуванням знижки ' + fmtMoney(c.discount) : ''));
+      }
+
+      function bumpIn(el) {
+        el.classList.remove('discount-in');
+        void el.offsetWidth;
+        el.classList.add('discount-in');
+      }
+
+      function buildCopyText(c) {
+        var lines = [
+          'RENOVA — розрахунок ремонту',
+          'Площа: ' + fmtNumber(c.area) + ' м²',
+          'Тип ремонту: ' + TYPE_LABELS[c.type],
+          'Терміновість: ' + URGENCY_LABELS[c.urgency] + ' (× ' + fmtCoef(c.coef) + ')',
+          'Тариф: ' + fmtMoney(c.rate) + '/м²',
+          'Базова вартість: ' + fmtMoney(c.base)
+        ];
+        if (c.hasDiscount) lines.push('Знижка: −' + fmtMoney(c.discount) + ' (' + fmtPercent(prices.discount.rate) + ')');
+        lines.push('Підсумкова вартість: ' + fmtMoney(c.total));
+        lines.push('', 'Розрахунок орієнтовний, тарифи демонстраційні.');
+        return plain(lines.join('\n'));
+      }
+
+      // Успіх показуємо лише після підтвердження браузером
+      function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text).catch(function () { return legacyCopy(text); });
+        }
+        return legacyCopy(text);
+      }
+
+      function legacyCopy(text) {
+        return new Promise(function (resolve, reject) {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          var ok = false;
+          try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+          document.body.removeChild(ta);
+          if (ok) resolve(); else reject(new Error('copy failed'));
+        });
+      }
+
+      function fillPrint(c) {
+        var pct = fmtPercent(prices.discount.rate);
+        var row = function (label, value) { return '<tr><th scope="row">' + escapeHtml(label) + '</th><td>' + escapeHtml(value) + '</td></tr>'; };
+        var compareRows = Object.keys(TYPE_LABELS).map(function (key) {
+          return row(TYPE_LABELS[key] + (key === c.type ? ' (обраний)' : ''), fmtMoney(calculate(c.area, key, c.urgency).total));
+        }).join('');
+
+        $('printSheet').innerHTML =
+          '<header class="ps-head">' +
+            '<div class="ps-brand"><span class="ps-mark">R</span>RENOVA</div>' +
+            '<div class="ps-meta"><strong>Кошторис ремонту квартири</strong><span>' + escapeHtml(dateFormat.format(new Date())) + '</span></div>' +
+          '</header>' +
+          '<h2>Параметри</h2><table>' +
+            row('Площа', fmtNumber(c.area) + ' м²') +
+            row('Тип ремонту', TYPE_LABELS[c.type]) +
+            row('Терміновість', URGENCY_LABELS[c.urgency] + ' (× ' + fmtCoef(c.coef) + ')') +
+            row('Тариф', fmtMoney(c.rate) + ' / м²') +
+          '</table>' +
+          '<h2>Розрахунок</h2><table>' +
+            row('Базова вартість', fmtMoney(c.base)) +
+            row('Знижка', c.hasDiscount ? '−' + fmtMoney(c.discount) + ' (' + pct + ')' : 'не застосовується (площа до ' + fmtNumber(prices.discount.areaThreshold) + ' м²)') +
+          '</table>' +
+          '<div class="ps-total"><span>Підсумкова вартість</span><strong>' + escapeHtml(fmtMoney(c.total)) + '</strong></div>' +
+          '<h2>Порівняння типів ремонту</h2><table>' + compareRows + '</table>' +
+          '<p class="ps-note">Тарифи демонстраційні й не є підтвердженими ринковими цінами. Розрахунок орієнтовний і не є комерційною пропозицією; точна вартість визначається після огляду об\'єкта.</p>';
       }
 
       function fillOptionPrices() {
@@ -1196,7 +1733,12 @@
 
       function failLoad(title, details) {
         prices = null;
+        lastCalc = null;
         controls.disabled = true;
+        resetBtn.disabled = true;
+        setActionsEnabled(false);
+        barItems.forEach(function (btn) { btn.disabled = true; btn.setAttribute('aria-pressed', 'false'); });
+        renderCompare(null);
         setStatus('error', 'Тарифи недоступні');
         form.querySelectorAll('[data-rate], [data-coef]').forEach(function (el) { el.textContent = '—'; });
         $('summaryChip').textContent = 'Помилка даних';
@@ -1225,6 +1767,8 @@
             if (errors.length) { failLoad('Файл тарифів пошкоджено', errors); return; }
             prices = data;
             controls.disabled = false;
+            resetBtn.disabled = false;
+            barItems.forEach(function (btn) { btn.disabled = false; });
             setStatus('ready', 'Тарифи завантажено');
             fillOptionPrices();
             render();
@@ -1236,10 +1780,7 @@
 
       areaInput.addEventListener('input', function () {
         var parsed = parseArea(areaInput.value);
-        if (!parsed.error) {
-          areaRange.value = Math.min(Number(areaRange.max), Math.max(Number(areaRange.min), parsed.value));
-          updateRangeFill();
-        }
+        if (!parsed.error) syncRangeTo(parsed.value);
         render();
       });
 
@@ -1253,6 +1794,42 @@
         if (e.target.name === 'type' || e.target.name === 'urgency') render();
       });
       form.addEventListener('submit', function (e) { e.preventDefault(); });
+
+      barItems.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var radio = form.querySelector('input[name="type"][value="' + btn.dataset.type + '"]');
+          if (!radio || radio.checked) return;
+          radio.checked = true;
+          render();
+        });
+      });
+
+      copyBtn.addEventListener('click', function () {
+        if (!lastCalc) return;
+        var seq = ++copySeq;
+        copyBtn.setAttribute('aria-busy', 'true');
+        copyText(buildCopyText(lastCalc))
+          .then(function () { if (seq === copySeq) showToast('success', 'Розрахунок скопійовано в буфер обміну.'); })
+          .catch(function () { if (seq === copySeq) showToast('error', 'Не вдалося скопіювати. Дозвольте браузеру доступ до буфера обміну й спробуйте ще раз.'); })
+          .then(function () { copyBtn.removeAttribute('aria-busy'); });
+      });
+
+      printBtn.addEventListener('click', function () {
+        if (!lastCalc) return;
+        fillPrint(lastCalc);
+        window.print();
+      });
+
+      resetBtn.addEventListener('click', function () {
+        areaInput.value = areaInput.defaultValue;
+        form.querySelectorAll('input[type="radio"]').forEach(function (r) { r.checked = r.defaultChecked; });
+        var parsed = parseArea(areaInput.value);
+        if (!parsed.error) syncRangeTo(parsed.value);
+        copySeq++; // відповідь копіювання, що прийде після скидання, не показуємо
+        clearToast();
+        render();
+        announce('Параметри скинуто до початкових значень.');
+      });
 
       updateRangeFill();
       loadPrices();
