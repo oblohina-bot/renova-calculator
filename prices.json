@@ -1,0 +1,14 @@
+{
+  "currency": "UAH",
+  "note": "Демонстраційні тарифи для навчального проєкту. Не є підтвердженими ринковими цінами.",
+  "pricesPerM2": {
+    "cosmetic": 7000,
+    "capital": 15000,
+    "designer": 25000
+  },
+  "urgencyCoefficients": {
+    "normal": 1.0,
+    "fast": 1.2,
+    "urgent": 1.4
+  }
+}

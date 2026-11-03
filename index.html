@@ -1,0 +1,1262 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RENOVA — калькулятор вартості ремонту</title>
+  <meta name="description" content="RENOVA — онлайн-калькулятор орієнтовної вартості ремонту квартири в Україні.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0d0c;
+      --surface: #111614;
+      --surface-2: #171d1a;
+      --surface-3: #1e2622;
+      --glass: rgba(17, 22, 20, 0.72);
+      --glass-2: rgba(23, 29, 26, 0.66);
+      --line: rgba(243, 245, 242, 0.07);
+      --line-strong: rgba(243, 245, 242, 0.14);
+      --text: #f3f5f2;
+      --muted: #94a09a;
+      --faint: #7f8a84;
+      --accent: #c8ff46;
+      --accent-hover: #d6ff72;
+      --accent-ink: #0d1206;
+      --accent-soft: rgba(200, 255, 70, 0.08);
+      --accent-line: rgba(200, 255, 70, 0.38);
+      --accent-glow: rgba(200, 255, 70, 0.22);
+      --danger: #ff8f80;
+      --danger-soft: rgba(255, 143, 128, 0.08);
+      --highlight: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+      --shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.7);
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --font-display: "Unbounded", "Manrope", system-ui, sans-serif;
+      --font-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --dur: 260ms;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      position: relative;
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: clip;
+      background:
+        radial-gradient(900px 520px at 88% -8%, rgba(200, 255, 70, 0.055), transparent 62%),
+        radial-gradient(700px 500px at -10% 110%, rgba(120, 160, 140, 0.05), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    /* Архітектурна сітка — ледь помітна й згасає до країв */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(243, 245, 242, 0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(243, 245, 242, 0.022) 1px, transparent 1px);
+      background-size: 72px 72px;
+      -webkit-mask-image: radial-gradient(ellipse 70% 55% at 50% 20%, #000 20%, transparent 80%);
+      mask-image: radial-gradient(ellipse 70% 55% at 50% 20%, #000 20%, transparent 80%);
+    }
+
+    ::selection { background: var(--accent); color: var(--accent-ink); }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 8px;
+    }
+
+    .visually-hidden {
+      position: absolute !important;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0 0 0 0);
+      white-space: nowrap; border: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+    @media (min-width: 720px) { .container { padding: 0 32px; } }
+
+    /* ---------- Topbar ---------- */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 38px; height: 38px;
+      border-radius: 11px;
+      background: linear-gradient(145deg, var(--accent-hover), var(--accent));
+      color: var(--accent-ink);
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 18px;
+      box-shadow: 0 8px 24px -8px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      transition: transform var(--dur) var(--ease);
+    }
+    .brand:hover .brand-mark { transform: rotate(-6deg); }
+    .brand-name {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 17px;
+      letter-spacing: 0.22em;
+    }
+    .brand-sub {
+      display: none;
+      padding-left: 14px;
+      margin-left: 2px;
+      border-left: 1px solid var(--line-strong);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    @media (min-width: 720px) { .brand-sub { display: inline; } }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--glass);
+      box-shadow: var(--highlight);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--faint);
+    }
+    .status[data-state="ready"] .status-dot { background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft), 0 0 12px var(--accent-glow); }
+    .status[data-state="error"] { color: var(--danger); border-color: rgba(255, 143, 128, 0.3); }
+    .status[data-state="error"] .status-dot { background: var(--danger); }
+    .status[data-state="loading"] .status-dot { animation: pulse 1.2s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: 0.3; } }
+
+    /* ---------- Hero ---------- */
+    .intro {
+      position: relative;
+      isolation: isolate;
+      display: grid;
+      gap: 28px;
+      padding: 56px 0 44px;
+    }
+    .intro::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 42% 58% at 22% 55%, rgba(200, 255, 70, 0.075), transparent 70%),
+        radial-gradient(ellipse 30% 40% at 85% 70%, rgba(200, 255, 70, 0.035), transparent 70%);
+      filter: blur(8px);
+    }
+    @media (min-width: 960px) {
+      .intro { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: end; gap: 56px; padding: 88px 0 64px; }
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 22px;
+      color: var(--accent);
+      font-size: 12.5px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 32px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent));
+    }
+    h1 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: clamp(2.1rem, 5.2vw, 4.4rem);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      background: linear-gradient(180deg, #ffffff 30%, #c9d0cb);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    h1 em {
+      font-style: normal;
+      background: linear-gradient(100deg, var(--accent-hover), var(--accent) 60%, #a9e03a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero-side { display: grid; gap: 28px; }
+    .lead {
+      margin: 0;
+      max-width: 440px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.6;
+    }
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--glass-2);
+      box-shadow: var(--highlight);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+    }
+    .hero-meta li {
+      display: grid;
+      gap: 2px;
+      padding: 14px 16px;
+    }
+    .hero-meta li + li { border-left: 1px solid var(--line); }
+    .hero-meta b {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .hero-meta span { color: var(--faint); font-size: 12.5px; line-height: 1.35; }
+
+    /* ---------- Layout ---------- */
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 20px;
+      padding-bottom: 72px;
+    }
+    @media (min-width: 960px) {
+      .workspace { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+      .result { position: sticky; top: 24px; }
+    }
+
+    .panel {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background: linear-gradient(180deg, var(--glass-2), var(--glass));
+      box-shadow: var(--highlight), var(--shadow);
+      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
+    }
+
+    /* ---------- Configurator ---------- */
+    .config { padding: 6px; }
+    .config fieldset {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      min-width: 0;
+    }
+    .config > fieldset:disabled { opacity: 0.45; }
+
+    .config .step {
+      padding: 24px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .config .step:last-child { border-bottom: 0; }
+    @media (min-width: 720px) { .config .step { padding: 30px 28px; } }
+
+    .step-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+      padding: 0;
+    }
+    /* legend ігнорує padding fieldset — float повертає його у звичайний потік */
+    legend.step-head { float: left; width: 100%; }
+    legend.step-head + * { clear: both; }
+    .step-num {
+      display: grid;
+      place-items: center;
+      width: 30px; height: 30px;
+      border: 1px solid var(--accent-line);
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .step-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    .step-desc {
+      margin-left: auto;
+      color: var(--faint);
+      font-size: 13px;
+      text-align: right;
+    }
+
+    /* Area */
+    .area-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 6px 6px 22px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(180deg, rgba(10, 13, 12, 0.9), rgba(10, 13, 12, 0.7));
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.35);
+      transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+    }
+    .area-row:hover { border-color: rgba(243, 245, 242, 0.22); }
+    .area-row:focus-within {
+      border-color: var(--accent-line);
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.35), 0 0 0 4px var(--accent-soft), 0 0 32px -8px var(--accent-glow);
+    }
+    .area-row.is-invalid { border-color: rgba(255, 143, 128, 0.55); }
+    .area-row.is-invalid:focus-within { box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.35), 0 0 0 4px var(--danger-soft); }
+    .area-input {
+      flex: 1;
+      width: 100%;
+      min-width: 0;
+      padding: 10px 0;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      font-family: var(--font-display);
+      font-size: clamp(1.9rem, 5vw, 2.6rem);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+      outline: none;
+    }
+    .area-input::placeholder { color: var(--faint); }
+    .area-unit {
+      padding: 12px 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .range-wrap { margin-top: 22px; }
+    .range {
+      --fill: 0%;
+      width: 100%;
+      height: 28px;
+      margin: 0;
+      background: transparent;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .range::-webkit-slider-runnable-track {
+      height: 4px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #9ccc2e, var(--accent) var(--fill), var(--surface-3) var(--fill));
+    }
+    .range::-moz-range-track { height: 4px; border-radius: 4px; background: var(--surface-3); }
+    .range::-moz-range-progress { height: 4px; border-radius: 4px; background: var(--accent); }
+    .range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px; height: 22px;
+      margin-top: -9px;
+      border: 5px solid var(--accent);
+      border-radius: 50%;
+      background: var(--bg);
+      box-shadow: 0 0 18px var(--accent-glow);
+      transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+    }
+    .range::-moz-range-thumb {
+      width: 12px; height: 12px;
+      border: 5px solid var(--accent);
+      border-radius: 50%;
+      background: var(--bg);
+      box-shadow: 0 0 18px var(--accent-glow);
+    }
+    .range:hover::-webkit-slider-thumb { transform: scale(1.12); }
+    .range:active::-webkit-slider-thumb { transform: scale(1.2); }
+    .range:focus-visible { outline: none; }
+    .range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 6px var(--accent-soft), 0 0 18px var(--accent-glow); }
+    .range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 6px var(--accent-soft); }
+    .range-scale {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 4px;
+      color: var(--faint);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .field-msg {
+      display: flex;
+      gap: 8px;
+      min-height: 22px;
+      margin: 14px 0 0;
+      color: var(--faint);
+      font-size: 14px;
+      transition: color var(--dur) var(--ease);
+    }
+    .field-msg.is-error { color: var(--danger); }
+
+    /* Option cards */
+    .config { container-type: inline-size; }
+    .types {
+      display: grid;
+      gap: 12px;
+    }
+    @container (min-width: 600px) { .types { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+    .option { position: relative; display: block; cursor: pointer; }
+    .option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .type-card {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      height: 100%;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(180deg, var(--surface-2), var(--surface));
+      box-shadow: var(--highlight);
+      transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease),
+                  transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+    }
+    /* світіння, що проявляється у вибраній картці */
+    .type-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(120% 70% at 0% 0%, rgba(200, 255, 70, 0.13), transparent 60%);
+      opacity: 0;
+      transition: opacity 320ms var(--ease);
+    }
+    .type-card > * { position: relative; }
+    .option:hover .type-card {
+      border-color: var(--line-strong);
+      transform: translateY(-3px);
+      box-shadow: var(--highlight), 0 18px 36px -22px rgba(0, 0, 0, 0.9);
+    }
+    .option input:focus-visible + .type-card { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .option input:checked + .type-card {
+      border-color: var(--accent-line);
+      box-shadow: var(--highlight), 0 0 0 1px rgba(200, 255, 70, 0.12), 0 22px 44px -24px rgba(200, 255, 70, 0.35);
+    }
+    .option input:checked + .type-card::before { opacity: 1; }
+    .type-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .type-icon {
+      display: grid;
+      place-items: center;
+      width: 42px; height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: var(--surface-3);
+      color: var(--muted);
+      transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease),
+                  box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+    }
+    .option:hover .type-icon { color: var(--text); }
+    .option input:checked + .type-card .type-icon {
+      border-color: transparent;
+      background: linear-gradient(145deg, var(--accent-hover), var(--accent));
+      color: var(--accent-ink);
+      box-shadow: 0 8px 22px -8px var(--accent-glow);
+    }
+    .check {
+      width: 20px; height: 20px;
+      border: 1.5px solid var(--line-strong);
+      border-radius: 50%;
+      transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+    }
+    .option input:checked + .type-card .check {
+      transform: scale(1.05);
+      border-color: var(--accent);
+      background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M6 10.5l2.6 2.5L14 7.5' fill='none' stroke='%230d1206' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 18px no-repeat;
+    }
+    .type-name {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+    }
+    .type-desc { color: var(--muted); font-size: 13.5px; line-height: 1.5; }
+    .type-price {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--text);
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      transition: color var(--dur) var(--ease);
+    }
+    .type-card .type-desc { margin-bottom: 16px; }
+    .option input:checked + .type-card .type-price { color: var(--accent); }
+    .type-price small { color: var(--faint); font-family: var(--font-body); font-size: 12px; font-weight: 500; }
+
+    /* Вузька колонка: картки стають горизонтальними, щоб назви не обрізались */
+    @container (max-width: 599px) {
+      .type-card {
+        display: grid;
+        grid-template-columns: 42px minmax(0, 1fr) auto;
+        column-gap: 16px;
+        row-gap: 4px;
+        align-items: start;
+      }
+      .type-top { display: contents; }
+      .type-icon { grid-column: 1; grid-row: 1 / span 3; }
+      .type-name { grid-column: 2; grid-row: 1; align-self: center; }
+      .check { grid-column: 3; grid-row: 1; align-self: center; }
+      .type-card .type-desc { grid-column: 2 / span 2; grid-row: 2; margin-bottom: 6px; }
+      .type-price { grid-column: 2 / span 2; grid-row: 3; padding-top: 12px; }
+    }
+
+    /* Urgency segmented control */
+    .urgency {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: rgba(10, 13, 12, 0.8);
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.35);
+    }
+    .seg {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 14px 6px;
+      border-radius: 18px;
+      text-align: center;
+      transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+    }
+    .option:hover .seg { background: var(--surface-2); }
+    .option input:focus-visible + .seg { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .option input:checked + .seg {
+      background: linear-gradient(180deg, var(--accent-hover), var(--accent));
+      color: var(--accent-ink);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 10px 26px -10px var(--accent-glow);
+    }
+    .seg-name { font-weight: 700; font-size: 14.5px; }
+    .seg-meta { color: var(--faint); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+    .option input:checked + .seg .seg-meta { color: rgba(13, 18, 6, 0.7); }
+
+    /* ---------- Result ---------- */
+    .result {
+      overflow: hidden;
+      padding: 28px 22px;
+      border-color: rgba(200, 255, 70, 0.16);
+      background:
+        radial-gradient(90% 60% at 100% 0%, rgba(200, 255, 70, 0.1), transparent 60%),
+        linear-gradient(180deg, rgba(25, 32, 28, 0.82), rgba(17, 22, 20, 0.82));
+      box-shadow: var(--highlight), var(--shadow), 0 0 80px -40px var(--accent-glow);
+      container-type: inline-size;
+    }
+    /* тонка світна лінія по верхньому краю */
+    .result::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 12%; right: 12%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(214, 255, 114, 0.7), transparent);
+    }
+    @media (min-width: 720px) { .result { padding: 34px 32px; } }
+
+    .result-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .chip {
+      padding: 6px 12px;
+      border: 1px solid var(--accent-line);
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
+      white-space: nowrap;
+    }
+
+    .total {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0 0.3em;
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 12.5cqi, 4rem);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.035em;
+      font-variant-numeric: tabular-nums;
+    }
+    .total-num {
+      white-space: nowrap;
+      background: linear-gradient(180deg, #ffffff 35%, #cfd6d1);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .total-cur {
+      color: var(--accent);
+      font-size: 0.42em;
+      letter-spacing: 0;
+    }
+    .total-sub {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 14.5px;
+    }
+
+    .notice {
+      display: flex;
+      gap: 14px;
+      padding: 18px;
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius);
+      background: rgba(10, 13, 12, 0.4);
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .notice strong { display: block; margin-bottom: 2px; color: var(--text); font-size: 16px; }
+    .notice-icon {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--surface-3);
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .notice.is-error {
+      border-style: solid;
+      border-color: rgba(255, 143, 128, 0.35);
+      background: var(--danger-soft);
+    }
+    .notice.is-error .notice-icon { background: rgba(255, 143, 128, 0.16); color: var(--danger); }
+    .notice ul { margin: 8px 0 0; padding-left: 18px; }
+    .notice code {
+      padding: 1px 6px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .breakdown {
+      display: grid;
+      gap: 4px;
+      margin: 28px 0 0;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: rgba(10, 13, 12, 0.45);
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 14.5px;
+      transition: background-color var(--dur) var(--ease);
+    }
+    .row:hover { background: rgba(243, 245, 242, 0.03); }
+    .row dt { color: var(--muted); }
+    .row dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+    .row.is-strong {
+      margin-top: 4px;
+      background: var(--surface-2);
+      box-shadow: var(--highlight);
+    }
+    .row.is-strong dt { color: var(--text); font-weight: 600; }
+    .row.is-strong dd { font-family: var(--font-display); font-weight: 500; }
+
+    .formula {
+      margin: 14px 0 0;
+      padding: 14px 16px;
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius);
+      color: var(--faint);
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.7;
+    }
+    .formula b { color: var(--text); font-weight: 600; }
+
+    .disclaimer {
+      display: flex;
+      gap: 10px;
+      margin: 22px 0 0;
+      color: var(--faint);
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+    .disclaimer svg { flex: none; margin-top: 2px; }
+
+    .is-hidden { display: none !important; }
+
+    /* ---------- Footer ---------- */
+    .footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 28px 0 40px;
+      border-top: 1px solid var(--line);
+      color: var(--faint);
+      font-size: 13px;
+    }
+
+    /* ---------- Motion ---------- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: reveal 0.7s var(--ease) forwards;
+      animation-delay: calc(var(--i, 0) * 90ms);
+    }
+    @keyframes reveal { to { opacity: 1; transform: none; } }
+
+    .bump { animation: bump 0.32s var(--ease); }
+    @keyframes bump {
+      0% { opacity: 0.55; transform: translateY(4px); }
+      100% { opacity: 1; transform: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-delay: 0ms !important;
+        transition-duration: 0.001ms !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="RENOVA — на головну">
+        <span class="brand-mark" aria-hidden="true">R</span>
+        <span class="brand-name">RENOVA</span>
+        <span class="brand-sub">Калькулятор ремонту квартири</span>
+      </a>
+      <span class="status" id="status" data-state="loading" role="status">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="statusText">Завантаження тарифів…</span>
+      </span>
+    </header>
+
+    <section class="intro" aria-labelledby="title">
+      <div class="reveal" style="--i:0">
+        <p class="eyebrow">Оцінка вартості · Україна</p>
+        <h1 id="title">Ремонт квартири,<br>прорахований <em>до гривні</em>.</h1>
+      </div>
+      <div class="hero-side reveal" style="--i:1">
+        <p class="lead">Вкажіть площу, оберіть тип ремонту й терміновість — орієнтовна вартість оновлюється миттєво, разом із прозорою формулою розрахунку.</p>
+        <ul class="hero-meta" aria-label="Можливості калькулятора">
+          <li><b>3</b><span>типи ремонту</span></li>
+          <li><b>3</b><span>рівні терміновості</span></li>
+          <li><b>₴</b><span>ціни в гривнях</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <main class="workspace">
+      <form class="panel config reveal" style="--i:2" id="calc" novalidate aria-label="Параметри розрахунку">
+        <fieldset id="controls" disabled>
+          <div class="step">
+            <div class="step-head">
+              <span class="step-num" aria-hidden="true">01</span>
+              <label class="step-title" for="area">Площа квартири</label>
+              <span class="step-desc">загальна, м²</span>
+            </div>
+            <div class="area-row" id="areaRow">
+              <input class="area-input" id="area" name="area" type="text" inputmode="decimal" autocomplete="off"
+                     value="60" placeholder="0" aria-describedby="areaMsg">
+              <span class="area-unit" aria-hidden="true">м²</span>
+            </div>
+            <div class="range-wrap">
+              <label class="visually-hidden" for="areaRange">Площа квартири, повзунок</label>
+              <input class="range" id="areaRange" type="range" min="10" max="300" step="1" value="60">
+              <div class="range-scale" aria-hidden="true">
+                <span>10</span><span>100</span><span>200</span><span>300 м²</span>
+              </div>
+            </div>
+            <p class="field-msg" id="areaMsg" aria-live="polite">Можна ввести дробове значення, наприклад 54,5.</p>
+          </div>
+
+          <fieldset class="step">
+            <legend class="step-head">
+              <span class="step-num" aria-hidden="true">02</span>
+              <span class="step-title">Тип ремонту</span>
+            </legend>
+            <div class="types">
+              <label class="option">
+                <input type="radio" name="type" value="cosmetic" checked>
+                <span class="type-card">
+                  <span class="type-top">
+                    <span class="type-icon" aria-hidden="true">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="6" rx="1.5"/><path d="M17 7h3v5h-8v3"/><rect x="10.5" y="15" width="3" height="6" rx="1"/></svg>
+                    </span>
+                    <span class="check" aria-hidden="true"></span>
+                  </span>
+                  <span class="type-name">Косметичний</span>
+                  <span class="type-desc">Фарбування, шпалери, підлогове покриття, дрібні оновлення.</span>
+                  <span class="type-price" data-rate="cosmetic">…</span>
+                </span>
+              </label>
+              <label class="option">
+                <input type="radio" name="type" value="capital">
+                <span class="type-card">
+                  <span class="type-top">
+                    <span class="type-icon" aria-hidden="true">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></svg>
+                    </span>
+                    <span class="check" aria-hidden="true"></span>
+                  </span>
+                  <span class="type-name">Капітальний</span>
+                  <span class="type-desc">Електрика, сантехніка, вирівнювання стін і підлоги, стяжка.</span>
+                  <span class="type-price" data-rate="capital">…</span>
+                </span>
+              </label>
+              <label class="option">
+                <input type="radio" name="type" value="designer">
+                <span class="type-card">
+                  <span class="type-top">
+                    <span class="type-icon" aria-hidden="true">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6L20 9.5l-4 4 1 6-5-2.9-5 2.9 1-6-4-4 5.4-.9z"/></svg>
+                    </span>
+                    <span class="check" aria-hidden="true"></span>
+                  </span>
+                  <span class="type-name">Дизайнерський</span>
+                  <span class="type-desc">Авторський проєкт, преміальні матеріали, складні рішення.</span>
+                  <span class="type-price" data-rate="designer">…</span>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="step">
+            <legend class="step-head">
+              <span class="step-num" aria-hidden="true">03</span>
+              <span class="step-title">Терміновість</span>
+            </legend>
+            <div class="urgency">
+              <label class="option">
+                <input type="radio" name="urgency" value="normal" checked>
+                <span class="seg">
+                  <span class="seg-name">Звичайна</span>
+                  <span class="seg-meta" data-coef="normal">…</span>
+                </span>
+              </label>
+              <label class="option">
+                <input type="radio" name="urgency" value="fast">
+                <span class="seg">
+                  <span class="seg-name">Прискорена</span>
+                  <span class="seg-meta" data-coef="fast">…</span>
+                </span>
+              </label>
+              <label class="option">
+                <input type="radio" name="urgency" value="urgent">
+                <span class="seg">
+                  <span class="seg-name">Термінова</span>
+                  <span class="seg-meta" data-coef="urgent">…</span>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+        </fieldset>
+      </form>
+
+      <aside class="panel result reveal" style="--i:3" aria-labelledby="resultLabel">
+        <p class="result-label">
+          <span id="resultLabel">Орієнтовна вартість</span>
+          <span class="chip" id="summaryChip">—</span>
+        </p>
+
+        <div id="resultLive" aria-live="polite" aria-atomic="true">
+          <div id="resultValue" class="is-hidden">
+            <p class="total" id="total"><span class="total-num">0</span> <span class="total-cur"></span></p>
+            <p class="total-sub" id="perM2"></p>
+          </div>
+
+          <div class="notice" id="resultNotice">
+            <span class="notice-icon" aria-hidden="true">…</span>
+            <div><strong>Завантажуємо тарифи</strong>Ще мить — читаємо дані з <code>prices.json</code>.</div>
+          </div>
+        </div>
+
+        <dl class="breakdown is-hidden" id="breakdown">
+          <div class="row"><dt>Площа</dt><dd id="bArea">—</dd></div>
+          <div class="row"><dt>Тариф за м²</dt><dd id="bRate">—</dd></div>
+          <div class="row"><dt>Коефіцієнт терміновості</dt><dd id="bCoef">—</dd></div>
+          <div class="row is-strong"><dt>Базова вартість</dt><dd id="bBase">—</dd></div>
+        </dl>
+        <p class="formula is-hidden" id="formula"></p>
+
+        <p class="disclaimer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16.5v.01"/></svg>
+          <span>Тарифи демонстраційні й не є підтвердженими ринковими цінами. Розрахунок орієнтовний і не є комерційною пропозицією; точна вартість визначається після огляду об'єкта.</span>
+        </p>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      <span>© RENOVA · навчальний проєкт</span>
+      <span>Ціни у гривнях · тарифи з <code>prices.json</code></span>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // Ключі мають збігатися з prices.json. Значень тарифів тут немає — тільки назви для інтерфейсу.
+      var TYPE_LABELS = { cosmetic: 'Косметичний', capital: 'Капітальний', designer: 'Дизайнерський' };
+      var URGENCY_LABELS = { normal: 'Звичайна', fast: 'Прискорена', urgent: 'Термінова' };
+      var AREA_MAX = 5000;
+
+      var money = new Intl.NumberFormat('uk-UA', { style: 'currency', currency: 'UAH', minimumFractionDigits: 0, maximumFractionDigits: 2 });
+      var number = new Intl.NumberFormat('uk-UA', { maximumFractionDigits: 2 });
+      var coefFormat = new Intl.NumberFormat('uk-UA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      var $ = function (id) { return document.getElementById(id); };
+      var form = $('calc');
+      var controls = $('controls');
+      var areaInput = $('area');
+      var areaRange = $('areaRange');
+      var areaRow = $('areaRow');
+      var areaMsg = $('areaMsg');
+      var defaultAreaMsg = areaMsg.textContent;
+
+      var prices = null;
+      var shownTotal = 0;
+      var animFrame = 0;
+      var animDone = 0;
+
+      // Захист від NaN / Infinity / undefined у будь-якому виводі
+      function fmtMoney(n) { return Number.isFinite(n) ? money.format(n) : '—'; }
+      function fmtNumber(n) { return Number.isFinite(n) ? number.format(n) : '—'; }
+      function fmtCoef(n) { return Number.isFinite(n) ? coefFormat.format(n) : '—'; }
+      function roundMoney(n) { return Math.round(n * 100) / 100; }
+
+      function isPlainObject(v) { return v !== null && typeof v === 'object' && !Array.isArray(v); }
+
+      function validatePrices(data) {
+        var errors = [];
+        if (!isPlainObject(data)) return ['Файл не містить об\'єкта з тарифами.'];
+
+        if (!isPlainObject(data.pricesPerM2)) {
+          errors.push('Відсутній розділ «pricesPerM2» з тарифами за м².');
+        } else {
+          Object.keys(TYPE_LABELS).forEach(function (key) {
+            var v = data.pricesPerM2[key];
+            if (v === undefined) errors.push('Немає тарифу для типу «' + TYPE_LABELS[key] + '» (' + key + ').');
+            else if (typeof v !== 'number' || !Number.isFinite(v) || v <= 0) errors.push('Тариф «' + TYPE_LABELS[key] + '» має бути додатним числом.');
+          });
+        }
+
+        if (!isPlainObject(data.urgencyCoefficients)) {
+          errors.push('Відсутній розділ «urgencyCoefficients» з коефіцієнтами терміновості.');
+        } else {
+          Object.keys(URGENCY_LABELS).forEach(function (key) {
+            var v = data.urgencyCoefficients[key];
+            if (v === undefined) errors.push('Немає коефіцієнта для «' + URGENCY_LABELS[key] + '» (' + key + ').');
+            else if (typeof v !== 'number' || !Number.isFinite(v) || v < 1 || v > 5) errors.push('Коефіцієнт «' + URGENCY_LABELS[key] + '» має бути числом від 1 до 5.');
+          });
+        }
+        return errors;
+      }
+
+      function parseArea(raw) {
+        var s = String(raw).replace(/\s+/g, '').replace(',', '.');
+        if (s === '') return { error: 'Вкажіть площу квартири, щоб побачити розрахунок.' };
+        if (!/^[-+]?(\d+(\.\d*)?|\.\d+)$/.test(s)) return { error: 'Площа має бути числом, наприклад 54 або 54,5.' };
+        var n = Number(s);
+        if (!Number.isFinite(n)) return { error: 'Площа має бути числом, наприклад 54 або 54,5.' };
+        if (n < 0) return { error: 'Площа не може бути від\'ємною.' };
+        if (n === 0) return { error: 'Площа має бути більшою за 0 м².' };
+        if (n > AREA_MAX) return { error: 'Перевірте площу: максимум ' + number.format(AREA_MAX) + ' м².' };
+        return { value: n };
+      }
+
+      function selected(name) {
+        var el = form.querySelector('input[name="' + name + '"]:checked');
+        return el ? el.value : null;
+      }
+
+      function setStatus(state, text) {
+        $('status').dataset.state = state;
+        $('statusText').textContent = text;
+      }
+
+      function showNotice(kind, title, html) {
+        var box = $('resultNotice');
+        box.className = 'notice' + (kind === 'error' ? ' is-error' : '');
+        box.innerHTML = '<span class="notice-icon" aria-hidden="true">' + (kind === 'error' ? '!' : 'i') + '</span>' +
+          '<div><strong></strong><span class="notice-body"></span></div>';
+        box.querySelector('strong').textContent = title;
+        box.querySelector('.notice-body').innerHTML = html;
+        box.classList.remove('is-hidden');
+        $('resultValue').classList.add('is-hidden');
+        $('breakdown').classList.add('is-hidden');
+        $('formula').classList.add('is-hidden');
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      // Сума великим числом, валюта — окремо меншим кеглем; обидві частини дає Intl
+      function setTotal(n) {
+        var el = $('total');
+        var num = '—', cur = '';
+        if (Number.isFinite(n)) {
+          var parts = money.formatToParts(n);
+          cur = parts.filter(function (p) { return p.type === 'currency'; }).map(function (p) { return p.value; }).join('');
+          num = parts.filter(function (p) { return p.type !== 'currency'; }).map(function (p) { return p.value; }).join('').trim();
+        }
+        el.querySelector('.total-num').textContent = num;
+        el.querySelector('.total-cur').textContent = cur;
+      }
+
+      function animateTotal(to) {
+        cancelAnimationFrame(animFrame);
+        clearTimeout(animDone);
+        var from = shownTotal;
+        shownTotal = to;
+        if (reduceMotion.matches || from === to) { setTotal(to); return; }
+        var start = performance.now();
+        var duration = 450;
+        // Якщо вкладка у фоні й requestAnimationFrame не спрацьовує, точне значення все одно з'явиться
+        animDone = setTimeout(function () {
+          cancelAnimationFrame(animFrame);
+          setTotal(to);
+        }, duration + 80);
+        (function tick(now) {
+          var t = Math.min(1, (now - start) / duration);
+          var eased = 1 - Math.pow(1 - t, 3);
+          setTotal(t < 1 ? Math.round(from + (to - from) * eased) : to);
+          if (t < 1) animFrame = requestAnimationFrame(tick);
+        })(start);
+      }
+
+      function bump(el) {
+        el.classList.remove('bump');
+        void el.offsetWidth;
+        el.classList.add('bump');
+      }
+
+      function updateRangeFill() {
+        var min = Number(areaRange.min), max = Number(areaRange.max);
+        var pct = ((Number(areaRange.value) - min) / (max - min)) * 100;
+        areaRange.style.setProperty('--fill', pct + '%');
+      }
+
+      function render() {
+        if (!prices) return;
+
+        var type = selected('type');
+        var urgency = selected('urgency');
+        var parsed = parseArea(areaInput.value);
+
+        $('summaryChip').textContent = TYPE_LABELS[type] + ' · ' + URGENCY_LABELS[urgency].toLowerCase();
+
+        if (parsed.error) {
+          areaRow.classList.add('is-invalid');
+          areaInput.setAttribute('aria-invalid', 'true');
+          areaMsg.classList.add('is-error');
+          areaMsg.textContent = parsed.error;
+          showNotice('hint', 'Потрібна коректна площа', escapeHtml(parsed.error));
+          return;
+        }
+
+        areaRow.classList.remove('is-invalid');
+        areaInput.removeAttribute('aria-invalid');
+        areaMsg.classList.remove('is-error');
+        areaMsg.textContent = defaultAreaMsg;
+
+        var area = parsed.value;
+        var rate = prices.pricesPerM2[type];
+        var coef = prices.urgencyCoefficients[urgency];
+        var base = roundMoney(area * rate * coef);
+        var total = base;
+
+        if (!Number.isFinite(total)) {
+          showNotice('error', 'Не вдалося розрахувати', 'Перевірте введені дані та файл тарифів.');
+          return;
+        }
+
+        var wasHidden = $('resultValue').classList.contains('is-hidden');
+        $('resultNotice').classList.add('is-hidden');
+        $('resultValue').classList.remove('is-hidden');
+        $('breakdown').classList.remove('is-hidden');
+        $('formula').classList.remove('is-hidden');
+
+        if (wasHidden) { shownTotal = total; setTotal(total); bump($('resultValue')); }
+        else animateTotal(total);
+
+        $('perM2').textContent = '≈ ' + fmtMoney(roundMoney(total / area)) + ' за м² з урахуванням терміновості';
+        $('bArea').textContent = fmtNumber(area) + ' м²';
+        $('bRate').textContent = fmtMoney(rate);
+        $('bCoef').textContent = '× ' + fmtCoef(coef);
+        $('bBase').textContent = fmtMoney(base);
+        $('formula').innerHTML =
+          'Формула: площа × тариф × коефіцієнт<br>' +
+          '<b>' + fmtNumber(area) + ' м²</b> × <b>' + fmtMoney(rate) + '</b> × <b>' + fmtCoef(coef) + '</b> = <b>' + fmtMoney(base) + '</b>';
+      }
+
+      function fillOptionPrices() {
+        Object.keys(TYPE_LABELS).forEach(function (key) {
+          var el = form.querySelector('[data-rate="' + key + '"]');
+          el.innerHTML = escapeHtml(fmtMoney(prices.pricesPerM2[key])) + ' <small>/ м²</small>';
+        });
+        Object.keys(URGENCY_LABELS).forEach(function (key) {
+          form.querySelector('[data-coef="' + key + '"]').textContent = '× ' + fmtCoef(prices.urgencyCoefficients[key]);
+        });
+      }
+
+      function failLoad(title, details) {
+        prices = null;
+        controls.disabled = true;
+        setStatus('error', 'Тарифи недоступні');
+        form.querySelectorAll('[data-rate], [data-coef]').forEach(function (el) { el.textContent = '—'; });
+        $('summaryChip').textContent = 'Помилка даних';
+        var list = details.length ? '<ul>' + details.map(function (d) { return '<li>' + escapeHtml(d) + '</li>'; }).join('') + '</ul>' : '';
+        showNotice('error', title, 'Розрахунок неможливий без коректних тарифів. Суму не показано, щоб не вводити в оману.' + list);
+      }
+
+      function loadPrices() {
+        if (location.protocol === 'file:') {
+          failLoad('Сторінку відкрито як файл', [
+            'Браузер блокує читання prices.json через file://.',
+            'Запустіть локальний сервер у папці проєкту (див. README) і відкрийте http://localhost:8000.'
+          ]);
+          return;
+        }
+        fetch('prices.json', { cache: 'no-store' })
+          .then(function (res) {
+            if (!res.ok) throw new Error('Сервер повернув помилку ' + res.status + ' під час завантаження prices.json.');
+            return res.text();
+          })
+          .then(function (text) {
+            var data;
+            try { data = JSON.parse(text); }
+            catch (e) { throw new Error('prices.json містить синтаксичну помилку JSON.'); }
+            var errors = validatePrices(data);
+            if (errors.length) { failLoad('Файл тарифів пошкоджено', errors); return; }
+            prices = data;
+            controls.disabled = false;
+            setStatus('ready', 'Тарифи завантажено');
+            fillOptionPrices();
+            render();
+          })
+          .catch(function (err) {
+            failLoad('Не вдалося завантажити тарифи', [err && err.message ? err.message : 'Невідома помилка мережі.']);
+          });
+      }
+
+      areaInput.addEventListener('input', function () {
+        var parsed = parseArea(areaInput.value);
+        if (!parsed.error) {
+          areaRange.value = Math.min(Number(areaRange.max), Math.max(Number(areaRange.min), parsed.value));
+          updateRangeFill();
+        }
+        render();
+      });
+
+      areaRange.addEventListener('input', function () {
+        areaInput.value = areaRange.value;
+        updateRangeFill();
+        render();
+      });
+
+      form.addEventListener('change', function (e) {
+        if (e.target.name === 'type' || e.target.name === 'urgency') render();
+      });
+      form.addEventListener('submit', function (e) { e.preventDefault(); });
+
+      updateRangeFill();
+      loadPrices();
+    })();
+  </script>
+</body>
+</html>
